@@ -1,0 +1,118 @@
+body,html {
+  font-family: 'Ubuntu', sans-serif;
+}
+
+#chart {
+  border: 1px solid #CCC;
+  text-align: center;
+}
+
+.bar {
+  fill: purple;
+  shape-rendering: crispEdges;
+}
+
+.bar-label {
+  fill: white;
+  font-size: 14px;
+  text-anchor:end;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+.gridline path,
+.gridline line {
+  fill:none;
+  stroke: #ccc;
+  opacity: 0.7;
+}
+
+.trendline {
+  fill: none;
+  stroke: #d23915;
+  stroke-width: 4px;
+}
+
+.area {
+  fill: #f97120;
+}
+
+circle {
+  fill: #7f1a05;
+}
+
+circle:hover {
+  fill: #FF5252;
+}
+
+div.tooltip {
+    position: absolute;
+    text-align: center;
+    width: 75px;
+    height: 35px;
+    padding: 2px;
+    font: 14px;
+    background: #2F2F2F;
+    color: white;
+    border: 0px;
+    border-radius: 3px;
+    pointer-events: none;
+}
+
+.logo-box {
+  margin-top: 130px;
+  max-width: 850px;
+  margin-left: auto;
+  margin-right: auto;
+  text-align: center;
+}
+
+.add-box {
+  margin-top: 25px;
+  text-align: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.logo-sep {
+  height: 4px;
+  width: 72%;
+  margin-right: auto;
+  margin-left: auto;
+  background-color: #000;
+}
+
+.logo-main {
+  font-size: 85px;
+}
+
+.logo-sub {
+  font-size: 30px;
+  color: grey !important;
+}
+
+.add-btn {
+  margin-top: 10px;
+  margin-left: 10px;
+  margin-right: 10px;
+  background-color: #f97120 !important;
+}
+
+.nav-link {
+  font-size: 16px !important;
+  color: white !important;
+}
+
+.nav-link:hover {
+  color: #e5e5e5 !important;
+}
+
+.mdl-layout__header {
+  background-color: #f97120 !important;
+  color: white !important;
+}

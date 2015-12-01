@@ -1,0 +1,18 @@
+{
+  "name": "Astraeus",
+  "version": "1.0.0",
+  "description": "Graphical Representation Of Mars Weather Data",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jacob Evans",
+  "license": "Apache 2.0",
+  "dependencies": {
+    "body-parser": "^1.14.1",
+    "ejs": "^2.3.4",
+    "express": "^4.13.3",
+    "mongoose": "^4.2.6",
+    "path": "^0.12.7"
+  }
+}
