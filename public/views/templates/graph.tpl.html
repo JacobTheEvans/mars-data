@@ -1,0 +1,29 @@
+<div id="scrollArea" class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer">
+  <header class="mdl-layout__header">
+    <div class="mdl-layout__header-row">
+      <a class="nav-link custom-title"><span class="mdl-layout-title">{{displayName}}</span></a>
+      <div class="mdl-layout-spacer"></div>
+      <a class="nav-link custom-title"><span class="mdl-layout-title title-nav"><span class="only-nav">Astraeus</span> <i class="fa fa-area-chart"></i></a>
+    </div>
+  </header>
+  <div class="mdl-layout__drawer">
+    <span class="mdl-layout-title m-drawer-title">Astraeus <i class="fa fa-area-chart"></i></span>
+    <nav class="mdl-navigation">
+      <a id="data-choice" class="mdl-navigation__link custom-link">Data Type <i class="fa fa-caret-square-o-down"></i></a>
+      <a class="mdl-navigation__link custom-link no-highlight">Point Frequency</a>
+      <div class="nav-feq"><div data-range-slider data-floor="1" data-ceiling="99" data-step="2" data-precision="2" data-highlight="left" data-ng-model="feq"></div></div>
+      <a class="mdl-navigation__link custom-link" href="https://github.com/JacobTheEvans">Source Code <i class="fa fa-github"></i></a>
+    </nav>
+    <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="data-choice">
+      <li class="mdl-menu__item" ng-click="setType('min_temp_fahrenheit')">Lowest Temperature Fahrenheit</li>
+      <li class="mdl-menu__item" ng-click="setType('max_temp_fahrenheit')">Highest Temperature Fahrenheit</li>
+      <li class="mdl-menu__item" ng-click="setType('min_temp')">Lowest Temperature Celsius</li>
+      <li class="mdl-menu__item" ng-click="setType('max_temp')">Highest Temperature Celsius</li>
+      <li class="mdl-menu__item" ng-click="setType('pressure')">Average Pressure</li>
+    </ul>
+  </div>
+  <main class="mdl-layout__content">
+    <div class="cont">
+      <div ng-if="dataToPlot.length > 0" type="{{type}}" xLabel="Date" yLabel="{{yLabel}}" chart chart-data="dataToPlot"></div>
+    </div>
+  </div>

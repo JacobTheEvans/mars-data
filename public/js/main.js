@@ -1,4 +1,4 @@
-var app = angular.module("main",["ngRoute","main.home","main.graph"]);
+var app = angular.module("main",["ngRoute","main.home","main.graph","angularRangeSlider"]);
 
 app.config(["$routeProvider", function($routeProvider) {
   $routeProvider.when("/", {
@@ -12,14 +12,9 @@ app.config(["$routeProvider", function($routeProvider) {
 app.directive("chart",function($window) {
   return {
     restrict: "EA",
-    template: "<svg id='chart-save' height='500'></svg>",
+    template: "<svg id='chart-save' height='600px'></svg>",
     link: function(scope, elem, attrs) {
-      var data = scope[attrs.chartData];
-      if(attrs.sort == "true") {
-        data.sort(function(a, b) {
-          return a.value - b.value;
-        })
-      }
+      var dataToPlot = scope[attrs.chartData];
 
       var xLabel = attrs.xlabel;
       var yLabel = attrs.ylabel;
@@ -31,187 +26,240 @@ app.directive("chart",function($window) {
 
       var chartData = {
         width: 1000,
-        height: 500
+        height: $(".mdl-layout__content").height() - 40
       };
 
-    var margin = {top: 40, right: 40, bottom: 40, left: 100},
+      $("#chart-save").height($(".mdl-layout__content").height());
+
+    var margin = {top: 40, right: 20, bottom: 40, left: 70},
     width = parseInt(rawSvg.parentElement.clientWidth, 10),
     width = width - margin.left - margin.right;
 
     var height = chartData.height - margin.top - margin.bottom;
 
-    var x = d3.scale.linear()
-      .domain([0,d3.max(data, function(d) {
-        return d.value;
-      })])
-      .range([0,width]);
+    var chart = svg.append("g")
+        .classed("display", true)
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    var y = d3.scale.ordinal()
-  		.domain(data.map(function(entry){
-  			return entry.key;
-  		}))
-  		.rangeBands([0, height]);
+    var dateParser = d3.time.format("%Y/%m/%d").parse;
 
-    var ordinalColorScale = d3.scale.category20();
+    var x = d3.time.scale()
+        .domain(d3.extent(dataToPlot, function(d) {
+          var date = dateParser(d.date);
+          return date;
+        }))
+        .range([0,width])
+
+    var y = d3.scale.linear()
+        .domain([d3.min(dataToPlot, function(d) {
+          return d.value;
+        }), d3.max(dataToPlot, function(d) {
+          return d.value;
+        })])
+        .range([height,0]);
 
     var xAxis = d3.svg.axis()
-      .scale(x)
-      .orient("bottom");
+        .scale(x)
+        .orient("bottom")
+        .ticks(6);
 
     var yAxis = d3.svg.axis()
-      .scale(y)
-      .orient("left");
+        .scale(y)
+        .orient("left");
 
-    var yGridlines = d3.svg.axis()
-      .scale(x)
-      .tickSize(-height,0,0)
-      .tickFormat("")
-      .orient("top");
+    var line = d3.svg.line()
+        .x(function(d) {
+          var date = dateParser(d.date);
+          return x(date);
+        })
+        .y(function(d) {
+          return y(d.value);
+        })
+        .interpolate("cardinal");
 
-    var chart = svg.append("g")
-      .classed("display", true)
-      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    var area = d3.svg.area()
+        .x(function(d) {
+          var date = dateParser(d.date);
+          return x(date);
+        })
+        .y0(height)
+        .y1(function(d) {
+          return y(d.value);
+        })
+        .interpolate("cardinal");
+
+    var div = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
 
     var plot = function(params) {
-      this.append("g")
-        .call(params.gridlines)
-  		  .classed("gridline", true)
-  		  .attr("transform","translate(0,0)");
+        //axes
+        this.append("g")
+            .classed("x axis",true)
+            .attr("transform","translate(0,"+ height +")")
+            .call(params.axis.x);
+        this.append("g")
+            .classed("y axis", true)
+            .attr("transform", "translate(0,0)")
+            .call(params.axis.y);
+        //enter()
+        this.selectAll(".area")
+            .data([params.data])
+            .enter()
+              .append("path")
+              .classed("area",true);
 
-      this.selectAll(".bar")
-        .data(params.data)
-        .enter()
-  			.append("rect")
-  			.classed("bar", true)
-  			.attr("x",0)
-  			.attr("y", function(d,i) {
-  				return y(d.key);
-  			})
-  			.attr("width", function(d,i) {
-  				return x(d.value);
-  			})
-  			.attr("height", function(d,i) {
-  				return y.rangeBand() - 1;
-  			})
-  			.style("fill", function(d,i) {
-  				return ordinalColorScale(i);
-  			});
+        var div = d3.select("body").append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
 
-  		this.selectAll(".bar-label")
-  			.data(params.data)
-  			.enter()
-  			.append("text", true)
-  			.classed("bar-label", true)
-  			.attr("x", function(d,i) {
-  				return x(d.value);
-  			})
-  			.attr("dx", -4)
-  			.attr("y", function(d,i) {
-  				return y(d.key);
-  			})
-  			.attr("dy", function(d,i) {
-  				return y.rangeBand()/1.5 -2;
-  			})
-  			.text(function(d,i) {
-  				return d.value;
-  			});
+        this.selectAll(".point")
+            .data(params.data)
+            .enter()
+              .append("circle")
+              .classed("point", true)
+              .attr("r", 5)
+              .append("title").text(function(d) {
+                return d.date;
+              });
+        this.select(".y.axis")
+            .append("text")
+          	.attr("x",0)
+          	.attr("y",0)
+          	.style("text-anchor","middle")
+          	.attr("transform","translate(" + (-margin.left + 15 )+","+ height / 2 +") rotate(-90)")
+          	.text(yLabel);
 
-  		this.append("g")
-  			.classed("x axis",true)
-  			.attr("transform","translate("+ 0 +"," + (height) +")")
-  			.call(params.axis.x);
+        //update
+        this.selectAll(".area")
+            .attr("d", function(d) {
+              return area(d);
+            })
+        this.selectAll(".point")
+            .attr("cx", function(d) {
+              var date = dateParser(d.date);
+              return x(date);
+            })
+            .attr("cy", function(d) {
+              return y(d.value);
+            })
+            .on("click", function() {
+              var date = function(d) {
+                return d.date;
+              };
+              window.location.replace("/#/Date/" + d3.select(this)[0][0].innerHTML.replace(/<\/?[^>]+(>|$)/g, ""));
+            })
+            .on("mouseover", function(d) {
+                  div.transition()
+                      .duration(200)
+                      .style("opacity", .9);
+                  div	.html("Date:<br>" + d.date + "<br/>")
+                      .style("left", (d3.event.pageX) + "px")
+                      .style("top", (d3.event.pageY - 28) + "px");
+                  })
+              .on("mouseout", function(d) {
+                  div.transition()
+                      .duration(500)
+                      .style("opacity", 0);
+              });
+        //exit()
+        this.selectAll(".area")
+            .data([params.data])
+            .exit()
+            .remove();
+        this.selectAll(".point")
+            .data(params.data)
+            .exit()
+            .remove();
+    };
 
-  		this.append("g")
-  			.classed("y axis",true)
-  			.attr("transform","translate("+ 0 +"," + 0 +")")
-  			.call(params.axis.y);
+    plot.call(chart,  {
+      data: dataToPlot,
+      axis: {
+        x: xAxis,
+        y: yAxis
+      }
+    });
 
-  		this.select(".y.axis")
-  			.append("text")
-  			.attr("x",0)
-  			.attr("y",0)
-  			.style("text-anchor","middle")
-  			.attr("transform","translate(" + (-margin.left + 15 )+","+ height / 2 +") rotate(-90)")
-  			.text(yLabel);
-      };
-
-      plot.call(chart, {
-        data: data,
-        axis: {
-          x: xAxis,
-          y: yAxis
-        },
-        gridlines: yGridlines
-      });
-
-      scope.resize = function(width) {
-        rawSvg.style.width= width;
+    scope.resize = function(width) {
+        rawSvg.style.width = width;
         width = width - margin.left - margin.right - 20;
-        var x = d3.scale.linear()
-          .domain([0,d3.max(data, function(d) {
-            return d.value;
-          })])
-          .range([0,width]);
 
-        var y = d3.scale.ordinal()
-          .domain(data.map(function(entry){
-            return entry.key;
-        	}))
-        	.rangeBands([0, height]);
+        dateParser = d3.time.format("%Y/%m/%d").parse;
 
-        var xAxis = d3.svg.axis()
-          .scale(x)
-        	.orient("bottom");
+        x = d3.time.scale()
+            .domain(d3.extent(dataToPlot, function(d) {
+              var date = dateParser(d.date);
+              return date;
+            }))
+            .range([0,width])
 
-        var yAxis = d3.svg.axis()
-        	.scale(y)
-        	.orient("left");
+        y = d3.scale.linear()
+            .domain([d3.min(dataToPlot, function(d) {
+              return d.value;
+            }), d3.max(dataToPlot, function(d) {
+              return d.value;
+            })])
+            .range([height,0]);
 
-        var yGridlines = d3.svg.axis()
-          .scale(x)
-        	.tickSize(-height,0,0)
-        	.tickFormat("")
-        	.orient("top");
+        xAxis = d3.svg.axis()
+            .scale(x)
+            .orient("bottom")
+            .ticks(6);
 
+        yAxis = d3.svg.axis()
+            .scale(y)
+            .orient("left");
+
+        area = d3.svg.area()
+            .x(function(d) {
+              var date = dateParser(d.date);
+              return x(date);
+            })
+            .y0(height)
+            .y1(function(d) {
+              return y(d.value);
+            })
+            .interpolate("cardinal");
+
+        d3.selectAll(".area").remove();
+        d3.selectAll("path").remove();
+        d3.selectAll(".point").remove();
         d3.selectAll(".tick").remove();
-        d3.selectAll(".bar").remove();
-        d3.selectAll(".gridline").remove();
-        d3.selectAll(".bar-label").remove();
         d3.selectAll(".x.axis").remove();
         d3.selectAll(".y.axis").remove();
+        d3.selectAll(".display").remove();
+        d3.selectAll(".tooltip").remove();
+        d3.selectAll(".chart").remove();
+        d3.selectAll(".gridline").remove();
 
-        plot.call(chart, {
-          data: data,
+        area = d3.svg.area()
+            .x(function(d) {
+              var date = dateParser(d.date);
+              return x(date);
+            })
+            .y0(height)
+            .y1(function(d) {
+              return y(d.value);
+            });
+
+        div = d3.select("body").append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
+
+        chart = svg.append("g")
+            .classed("display", true)
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+        plot.call(chart,  {
+          data: dataToPlot,
           axis: {
             x: xAxis,
             y: yAxis
-          },
-          gridlines: yGridlines
+          }
         });
 
-        d3.selectAll(".bar")
-      	.attr("x",0)
-      	.attr("y", function(d,i) {
-      			return y(d.key);
-      	})
-      	.attr("width", function(d,i) {
-      		return x(d.value);
-      	})
-        .attr("height", function(d,i) {
-          return y.rangeBand() - 1;
-        });
-
-        d3.selectAll(".bar-label")
-          .attr("x", function(d,i) {
-            return x(d.value);
-          })
-          .attr("dx", -4)
-          .attr("y", function(d,i) {
-            return y(d.key);
-          })
-          .attr("dy", function(d,i) {
-            return y.rangeBand()/1.5 -2;
-          });
+        d3.select(".x.axis text").remove();
         d3.select(".x.axis")
         .append("text")
         .attr("x", 0)
@@ -232,26 +280,6 @@ app.directive("chart",function($window) {
       var width = rawSvg.parentElement.clientWidth - 20;
       scope.resize(width);
 
-      attrs.$observe("sort", function(change) {
-        var rawSvg = elem.find("svg")[0];
-        var svg = d3.select(rawSvg);
-        var width = rawSvg.parentElement.clientWidth - 20;
-        var old = null;
-        if(change == "true") {
-          old = data;
-          data = data.slice().sort(function(a, b) {
-            return b.value - a.value;
-          });
-        } else {
-          if(old) {
-            data = old;
-          } else {
-            data = scope[attrs.chartData];
-          }
-        }
-        scope.resize(width);
-      });
-
       attrs.$observe("xlabel", function(change) {
         var rawSvg = elem.find("svg")[0];
         var svg = d3.select(rawSvg);
@@ -268,9 +296,17 @@ app.directive("chart",function($window) {
         scope.resize(width);
       });
 
+      attrs.$observe("type", function(change) {
+        var rawSvg = elem.find("svg")[0];
+        var svg = d3.select(rawSvg);
+        var width = rawSvg.parentElement.clientWidth - 20;
+        type = change;
+        scope.resize(width);
+      });
+
       scope.$watch(attrs.chartData, function(newValue, oldValue) {
         if (newValue) {
-          old = oldValue;
+          dataToPlot = newValue;
           var rawSvg = elem.find("svg")[0];
           var svg = d3.select(rawSvg);
           var width = rawSvg.parentElement.clientWidth - 20;

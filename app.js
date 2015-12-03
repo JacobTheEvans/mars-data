@@ -16,4 +16,8 @@ app.get("/", function(req,res) {
   res.render("index.html");
 });
 
+app.get("/data", function(req,res) {
+  res.sendfile("public/views/data.json");
+});
+
 app.listen(8080);

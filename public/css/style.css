@@ -51,6 +51,7 @@ circle:hover {
 }
 
 div.tooltip {
+  z-index : 1;
     position: absolute;
     text-align: center;
     width: 75px;
@@ -84,10 +85,11 @@ div.tooltip {
   width: 72%;
   margin-right: auto;
   margin-left: auto;
-  background-color: #000;
+  background-color: #464646;
 }
 
 .logo-main {
+  color: #464646 !important;
   font-size: 85px;
 }
 
@@ -108,11 +110,85 @@ div.tooltip {
   color: white !important;
 }
 
-.nav-link:hover {
-  color: #e5e5e5 !important;
-}
-
 .mdl-layout__header {
   background-color: #f97120 !important;
   color: white !important;
+}
+
+.title-nav {
+  color: white !important;
+}
+
+.custom-title {
+  font-size: 20px !important;
+}
+
+.custom-link {
+  font-size: 16px !important;
+}
+
+.mdl-layout__drawer-button {
+  color: white !important;
+}
+
+.cont {
+  margin-left: 10px;
+}
+
+.mdl-custom {
+  margin-right: 20px;
+}
+
+.add-btn {
+  margin-bottom: 20px;
+  color: white !important;
+}
+
+.nav-feq {
+  margin-top: -20px;
+  margin-bottom: -15px;
+  margin-left: 35px;
+  width: 50% !important;
+}
+
+.no-highlight:hover {
+  background-color: #fafafa !important;
+}
+
+.bar {
+  border-radius: 2px !important;
+  background-color: grey !important;
+  height: 5px !important;
+}
+
+.selection {
+  background-color: #f97120 !important;
+}
+
+.handle {
+  background-color: #f97120 !important;
+  border-width: 2px !important;
+  border-color: #7f1a05 !important;
+  top: -5px !important;
+  margin-bottom: 0px !important;
+  border-radius: 10px !important;
+  width: 9px !important;
+  height: 9px !important;
+}
+
+.m-drawer-title {
+  margin-top: 30px;
+  color: #464646 !important;
+}
+
+@media (min-width: 1025px) {
+  .only-nav {
+    display: none !important;
+  }
+}
+
+@media (max-width: 1026px) {
+  .nav-feq {
+    margin-left: 14px !important;
+  }
 }
