@@ -24,6 +24,16 @@
   </div>
   <main class="mdl-layout__content">
     <div class="cont">
-      <div ng-if="dataToPlot.length > 0" type="{{type}}" xLabel="Date" yLabel="{{yLabel}}" chart chart-data="dataToPlot"></div>
+      <div ng-if="dataToPlot.length > 0" color="{{color}}" type="{{type}}" xLabel="Date" yLabel="{{yLabel}}" chart chart-data="dataToPlot"></div>
     </div>
   </div>
+  <script>
+  //Fix for mdl drawer
+  $(document).mousedown(function (e) {
+    var container = $(".mdl-layout__drawer");
+    var button = $(".mdl-layout__drawer-button");
+    if(!container.is(e.target) && !button.is(e.target)) {
+      container.removeClass("is-visible");
+    }
+  });
+  </script>

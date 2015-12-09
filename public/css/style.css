@@ -42,6 +42,18 @@ body,html {
   fill: #f97120;
 }
 
+.hot {
+  fill: #f97120 !important;
+}
+
+.cold {
+    fill: #9fabb7 !important;
+}
+
+.pressure {
+  fill: #ffcf58 !important;
+}
+
 circle {
   fill: #7f1a05;
 }
@@ -179,6 +191,10 @@ div.tooltip {
 .m-drawer-title {
   margin-top: 30px;
   color: #464646 !important;
+}
+
+.graph-small {
+  height: 250px !important;
 }
 
 @media (min-width: 1025px) {

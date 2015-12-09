@@ -1,4 +1,4 @@
-var app = angular.module("main",["ngRoute","main.home","main.graph","angularRangeSlider"]);
+var app = angular.module("main",["ngRoute","main.home","main.graph","main.specific","angularRangeSlider"]);
 
 app.config(["$routeProvider", function($routeProvider) {
   $routeProvider.when("/", {
@@ -18,6 +18,7 @@ app.directive("chart",function($window) {
 
       var xLabel = attrs.xlabel;
       var yLabel = attrs.ylabel;
+      var color = attrs.color;
 
       var pathClass = "path";
       var d3 = $window.d3;
@@ -103,11 +104,18 @@ app.directive("chart",function($window) {
             .attr("transform", "translate(0,0)")
             .call(params.axis.y);
         //enter()
-        this.selectAll(".area")
+        var colorChange = this.selectAll(".area")
             .data([params.data])
             .enter()
               .append("path")
               .classed("area",true);
+        if(color == "Hot") {
+          colorChange.classed("hot",true);
+        } else if(color == "Cold") {
+          colorChange.classed("cold",true);
+        } else if(color == "Pressure") {
+          colorChange.classed("pressure",true);
+        }
 
         var div = d3.select("body").append("div")
             .attr("class", "tooltip")
@@ -120,7 +128,7 @@ app.directive("chart",function($window) {
               .classed("point", true)
               .attr("r", 5)
               .append("title").text(function(d) {
-                return d.date;
+                return d.date.replace(/\-/,"/");
               });
         this.select(".y.axis")
             .append("text")
@@ -144,16 +152,13 @@ app.directive("chart",function($window) {
               return y(d.value);
             })
             .on("click", function() {
-              var date = function(d) {
-                return d.date;
-              };
-              window.location.replace("/#/Date/" + d3.select(this)[0][0].innerHTML.replace(/<\/?[^>]+(>|$)/g, ""));
+              window.location.replace("/#/date/" + d3.select(this)[0][0].innerHTML.replace(/<\/?[^>]+(>|$)/g, "").replace(/\//g, "-"));
             })
             .on("mouseover", function(d) {
                   div.transition()
                       .duration(200)
                       .style("opacity", .9);
-                  div	.html("Date:<br>" + d.date + "<br/>")
+                  div.html("Date:<br>" + d.date.replace(/\//g, "-") + "<br/>")
                       .style("left", (d3.event.pageX) + "px")
                       .style("top", (d3.event.pageY - 28) + "px");
                   })
@@ -182,6 +187,7 @@ app.directive("chart",function($window) {
     });
 
     scope.resize = function(width) {
+        color = attrs.color;
         rawSvg.style.width = width;
         width = width - margin.left - margin.right - 20;
 

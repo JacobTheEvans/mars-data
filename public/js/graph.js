@@ -10,6 +10,7 @@ app.config(["$routeProvider", function($routeProvider) {
 
 app.controller("graphController", ["$scope", "$timeout", "dataRequests", function($scope,$timeout,dataRequests) {
   $scope.feq = 10;
+  $scope.color = "Hot";
   $scope.yLabel = "Temperature";
   $scope.dataToPlot = [];
   $scope.type = "max_temp";
@@ -20,18 +21,23 @@ app.controller("graphController", ["$scope", "$timeout", "dataRequests", functio
     if(type == "min_temp_fahrenheit") {
       $scope.displayName = "Lowest Temperature Fahrenheit";
       $scope.yLabel = "Temperature";
+      $scope.color = "Cold"
     } else if(type == "max_temp_fahrenheit") {
       $scope.displayName = "Highest Temperature Fahrenheit";
       $scope.yLabel = "Temperature";
+      $scope.color = "Hot";
     } else if(type == "min_temp") {
       $scope.displayName == "Lowest Temperature Celsius";
       $scope.yLabel = "Temperature";
+      $scope.color = "Cold";
     } else if(type == "max_temp") {
       $scope.displayName = "Highest Temperature Celsius";
       $scope.yLabel = "Temperature";
+      $scope.color = "Hot";
     } else if(type == "pressure") {
       $scope.displayName = "Average Pressure";
       $scope.yLabel = "Pressure";
+      $scope.color = "Pressure";
     }
     dataRequests.getData($scope.setData,$scope.logError);
   };
@@ -47,7 +53,16 @@ app.controller("graphController", ["$scope", "$timeout", "dataRequests", functio
           average += sample[x][$scope.type];
         }
         average = Math.floor(average / sample.length);
-        $scope.dataToPlot.push({key:$scope.type, value: average, date: date.getFullYear() + "/" + date.getMonth() + "/" + date.getDay()});
+        var month = date.getUTCMonth() + 1;
+        if(month <= 9) {
+          month = "0" + month;
+        }
+        var day = date.getUTCDate();
+        if(day <= 9) {
+          day = "0" + day;
+        }
+        var fullDate = date.getUTCFullYear() + "/" + (month) + "/" + day;
+        $scope.dataToPlot.push({key:$scope.type, value: average, date: fullDate});
         counter = 0;
       }
     }
