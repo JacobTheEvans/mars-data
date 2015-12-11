@@ -255,6 +255,11 @@ div.tooltip {
   stroke: white !important;
 }
 
+.pie-text {
+  fill: #ffffff;
+  font-size: 20px;
+}
+
 @media (min-width: 1025px) {
   .only-nav {
     display: none !important;
@@ -273,5 +278,8 @@ div.tooltip {
   }
   .sol {
     margin-top: -70px;
+  }
+  .pie-text {
+    font-size: 15px !important;
   }
 }

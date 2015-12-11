@@ -403,8 +403,7 @@ app.directive("chartpie",function($window) {
             currentIndex = i;
             return data[i].label;
           })
-          .style("fill","#ffffff")
-          .style("font-size","20px");
+          .classed("pie-text",true);
 
           var text = arcs.append("text")
           .attr("transform", function(d) {
@@ -416,8 +415,7 @@ app.directive("chartpie",function($window) {
               currentIndex = i;
               return data[i].sub;
             })
-            .style("fill","#ffffff")
-            .style("font-size","20px");
+            .classed("pie-text",true);
 
             for(var i = 0; i < translates.length; i++) {
               arcs.append("foreignObject")
