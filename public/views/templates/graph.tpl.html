@@ -1,9 +1,8 @@
 <div id="scrollArea" class="mdl-layout mdl-js-layout mdl-layout--fixed-header mdl-layout--fixed-drawer">
   <header class="mdl-layout__header">
     <div class="mdl-layout__header-row">
-      <a class="nav-link custom-title"><span class="mdl-layout-title">{{displayName}}</span></a>
       <div class="mdl-layout-spacer"></div>
-      <a class="nav-link custom-title"><span class="mdl-layout-title title-nav"><span class="only-nav">Astraeus</span> <i class="fa fa-area-chart"></i></a>
+      <a class="nav-link custom-title"><span class="mdl-layout-title">{{displayName}}</span></a>
     </div>
   </header>
   <div class="mdl-layout__drawer">
@@ -32,7 +31,7 @@
   $(document).mousedown(function (e) {
     var container = $(".mdl-layout__drawer");
     var button = $(".mdl-layout__drawer-button");
-    if(!container.is(e.target) && !button.is(e.target)) {
+    if(!container.is(e.target) && !button.is(e.target) && container.has(e.target).length === 0) {
       container.removeClass("is-visible");
     }
   });

@@ -12,6 +12,10 @@ body,html {
   shape-rendering: crispEdges;
 }
 
+.color-white {
+  color: white !important;
+}
+
 .bar-label {
   fill: white;
   font-size: 14px;
@@ -46,12 +50,32 @@ body,html {
   fill: #f97120 !important;
 }
 
+.hot-background {
+  background-color: #f97120 !important;
+}
+
 .cold {
     fill: #9fabb7 !important;
 }
 
+.cold-background {
+  background-color: #9fabb7 !important;
+}
+
 .pressure {
-  fill: #ffcf58 !important;
+  fill: #ffac33 !important;
+}
+
+.pressure-background {
+  background-color: #ffac33 !important;
+}
+
+.season-background {
+  background-color: #D56E55 !important;
+}
+
+.sunrise-background {
+  background-color: #F54040 !important;
 }
 
 circle {
@@ -81,7 +105,7 @@ div.tooltip {
   margin-top: 130px;
   max-width: 850px;
   margin-left: auto;
-  margin-right: auto;
+  margin-right: auto;``
   text-align: center;
 }
 
@@ -101,11 +125,13 @@ div.tooltip {
 }
 
 .logo-main {
+  text-align: center;
   color: #464646 !important;
   font-size: 85px;
 }
 
 .logo-sub {
+  text-align: center;
   font-size: 30px;
   color: grey !important;
 }
@@ -197,6 +223,38 @@ div.tooltip {
   height: 250px !important;
 }
 
+.cont-pie {
+  margin-top: 75px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 95% !important;
+}
+
+.sol {
+  text-align: center;
+  font-size: 45px;
+  color: #464646;
+}
+
+.sol-sub {
+  margin-top: -10px;
+  text-align: center !important;
+}
+
+.sol-sub a {
+  color: #3366ff !important;
+  text-decoration: none;
+}
+
+.sol-sub a:hover {
+  color: #3366ff !important;
+  font-size: 15px;
+}
+
+.text-white {
+  stroke: white !important;
+}
+
 @media (min-width: 1025px) {
   .only-nav {
     display: none !important;
@@ -206,5 +264,14 @@ div.tooltip {
 @media (max-width: 1026px) {
   .nav-feq {
     margin-left: 14px !important;
+  }
+}
+
+@media (max-width: 465px) {
+  .cont-pie {
+    margin-top: 0px;
+  }
+  .sol {
+    margin-top: -70px;
   }
 }

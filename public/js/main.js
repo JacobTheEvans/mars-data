@@ -323,3 +323,132 @@ app.directive("chart",function($window) {
     }
   }
 });
+
+app.directive("chartpie",function($window) {
+  return {
+    restrict: "EA",
+    template: "<svg id='chart-save' height='600px' width='600px'></svg>",
+    link: function(scope, elem, attrs) {
+      var data = scope[attrs.chartData];
+
+      var pathClass = "path";
+      var d3 = $window.d3;
+      var rawSvg = elem.find("svg")[0];
+      var svg = d3.select(rawSvg);
+
+      var chartData = {
+        width: 1000,
+        height: $(".cont").height() - 40
+      };
+
+      $("#chart-save").height($(".cont").height());
+      var w = $(".cont").width();
+      var h = $(".cont").height() - 40;
+      var r;
+      var color = ["#f97120","#9fabb7","#ffac33","#7f1a05"];
+
+      var plot = function() {
+        var currentIndex = 0;
+        var width = $(".cont").width();
+        var height =  $(".cont").height() - 40;
+        w = Math.min(width, height);
+        h = Math.min(width, height);
+        r = Math.min(width, height) /2;
+        var colorCounter = 0;
+        var vis = svg
+        .data([data])
+        .attr("width",w)
+        .attr("height",h)
+        .append("g")
+        .attr("transform","translate(" + width/2 + "," + height/2 + ")");
+
+        var pie = d3.layout.pie()
+        .value(function(d) {
+          return d.value;
+        });
+
+        var translates = [];
+
+        var arc = d3.svg.arc().outerRadius(r);
+
+        var arcs = vis.selectAll("g.slice")
+        .data(pie)
+        .enter()
+        .append("g")
+        .attr("class","slice");
+
+        arcs.append("path")
+        .attr("fill", function(d,i) {
+          if(colorCounter >= color.length) {
+            var temp = colorCounter;
+            colorCounter = 0;
+            return color[temp];
+          } else {
+            var temp = colorCounter;
+            colorCounter++;
+            return color[temp];
+          }
+        })
+        .attr("d",function(d) {
+          return arc(d);
+        });
+        var text = arcs.append("text")
+        .attr("transform", function(d) {
+          d.innerRadius = 0;
+          d.outerRadius = r;
+          translates.push(arc.centroid(d));
+          return "translate(" + (arc.centroid(d)[0] - 10).toString() +"," + (arc.centroid(d)[1] - 35).toString() + ")";})
+          .attr("text-anchor","middle")
+          .text(function(d,i) {
+            currentIndex = i;
+            return data[i].label;
+          })
+          .style("fill","#ffffff")
+          .style("font-size","20px");
+
+          var text = arcs.append("text")
+          .attr("transform", function(d) {
+            d.innerRadius = 0;
+            d.outerRadius = r;
+            return "translate(" + (arc.centroid(d)[0] - 10).toString() +"," + (arc.centroid(d)[1] - 10).toString() + ")";})
+            .attr("text-anchor","middle")
+            .text(function(d,i) {
+              currentIndex = i;
+              return data[i].sub;
+            })
+            .style("fill","#ffffff")
+            .style("font-size","20px");
+
+            for(var i = 0; i < translates.length; i++) {
+              arcs.append("foreignObject")
+              .attr("transform","translate(" + (translates[i][0] -15).toString() +"," + (translates[i][1] + 7).toString() + ")")
+              .append("xhtml")
+              .style("font-size","30px")
+              .html("<i class='color-white " + data[i].icon + "'></i>");
+            }
+
+      }
+      plot();
+
+      var resize = function() {
+        width = $(".cont").width();
+        rawSvg.style.width = width;
+        d3.selectAll("#chart-save").selectAll("*").remove();
+        plot();
+      };
+      resize();
+
+      angular.element($window).bind('resize', function() {
+        resize();
+        scope.$apply();
+      });
+
+      scope.$watch(attrs.chartData, function(newValue, oldValue) {
+        if (newValue) {
+          dataToPlot = newValue;
+          resize();
+        }
+      }, true);
+    }
+  }
+});
