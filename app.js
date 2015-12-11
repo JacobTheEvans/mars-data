@@ -1,8 +1,6 @@
 var express = require("express");
-var mongoose = require("mongoose");
 var bodyParser = require("body-parser");
 var path = require("path");
-mongoose.connect("mongodb://localhost/database");
 
 var app = express();
 app.use(bodyParser.urlencoded({ extended: false }))
