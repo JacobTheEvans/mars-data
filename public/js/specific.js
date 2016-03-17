@@ -43,8 +43,7 @@ app.controller("specificController", ["$scope", "$timeout", "dataRequests", "$ro
   $scope.logError = function(response) {
     console.log("Error", response.status, response.data);
   };
-  $scope.$on('$viewContentLoaded', () => {
-    $timeout(() => {
+  setTimeout(function() {
       $(".tooltip").hide();
       componentHandler.upgradeAllRegistered();
       dataRequests.getData($scope.setData,$scope.logError);
@@ -58,6 +57,5 @@ app.controller("specificController", ["$scope", "$timeout", "dataRequests", "$ro
           container.removeClass("is-visible");
         }
       });
-    })
-  });
+  }, 1000);
 }]);
