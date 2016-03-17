@@ -8,8 +8,7 @@ app.config(["$routeProvider", function($routeProvider) {
 }]);
 
 app.controller("homeController", ["$scope", "$timeout", function($scope,$timeout) {
-  $scope.$on('$viewContentLoaded', () => {
-    $timeout(() => {
+  setTimeout(function() {
       componentHandler.upgradeAllRegistered();
       d3.selectAll(".area").remove();
       d3.selectAll(".point").remove();
@@ -17,6 +16,5 @@ app.controller("homeController", ["$scope", "$timeout", function($scope,$timeout
       d3.selectAll(".x.axis").remove();
       d3.selectAll(".y.axis").remove();
       d3.selectAll(".tooltip").remove();
-    })
-  });
+  }, 1000);
 }])
