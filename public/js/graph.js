@@ -73,10 +73,10 @@ app.controller("graphController", ["$scope", "$timeout", "dataRequests", functio
   $scope.logError = function(response) {
     console.log("Error", response.status, response.data);
   };
-  $scope.$on('$viewContentLoaded', () => {
-    $timeout(() => {
-      componentHandler.upgradeAllRegistered();
-      dataRequests.getData($scope.setData,$scope.logError);
-    })
-  });
+    $scope.updateMDL = function() {
+    componentHandler.upgradeAllRegistered();
+  };
+  setTimeout(function() {
+    $scope.updateMDL();
+  }, 1000);
 }])
