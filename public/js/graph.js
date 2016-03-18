@@ -75,8 +75,18 @@ app.controller("graphController", ["$scope", "$timeout", "dataRequests", functio
   };
     $scope.updateMDL = function() {
     componentHandler.upgradeAllRegistered();
-  };
-  setTimeout(function() {
-    $scope.updateMDL();
-  }, 1000);
+  }
+  $scope.$on('$viewContentLoaded', () => {
+    try {
+      $timeout(() => {
+        componentHandler.upgradeAllRegistered();
+        dataRequests.getData($scope.setData,$scope.logError);
+      }) 
+    } catch(err) {
+      setTimeout(function() {
+        $scope.updateMDL();
+        
+      }, 1000);
+    }
+  });
 }])
