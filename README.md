@@ -6,5 +6,3 @@ Made using D3, Angular and MDL.
 Data taken from
 http://marsweather.ingenology.com/
 <br>
-Live Site
-http://marsdata.io/
